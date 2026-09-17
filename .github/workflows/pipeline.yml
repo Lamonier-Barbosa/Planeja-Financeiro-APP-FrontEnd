@@ -39,5 +39,5 @@ jobs:
       - name: Upload Artifact (Dist)
         uses: actions/upload-artifact@v4
         with:
-          name: angular-dist
+          name: planeja-financeiro-app-frontEnd
           path: dist/Planeja-app
