@@ -9,6 +9,9 @@ on:
     branches:
       - develop
 
+permissions:
+  actions: read
+
 jobs:
   deploy-dev:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -22,7 +25,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v5
         with:
-          name: planeja-financeiro-api
+          name: planeja-financeiro-app-frontEnd
           path: artifact
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
