@@ -9,6 +9,9 @@ on:
     branches:
       - release
 
+permissions:
+  actions: read
+
 jobs:
   deploy-hml:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
