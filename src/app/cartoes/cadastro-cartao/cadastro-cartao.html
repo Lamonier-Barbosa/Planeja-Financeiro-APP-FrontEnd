@@ -15,6 +15,18 @@
             <div class="form-group">
                 <label for="nome">Nome do Cartão: *</label>
                 <input formControlName="nome" type="text" id="nome" name="nome" placeholder="Ex: Meu Cartão.">
+
+                @if(form.controls.nome.hasError('required') && form.controls.nome.touched) {
+                <span class="form-hint form-hint-error">
+                    O nome do cartão é obrigatório.
+                </span>
+                }
+
+                @if(form.controls.nome.hasError('apiError') && form.controls.nome.touched) {
+                <span class="form-hint form-hint-error">
+                    {{ form.get('nome')?.errors?.['apiError']}}
+                </span>
+                }
             </div>
 
             <div class="form-group">
@@ -26,7 +38,21 @@
                     <option value="AMERICAN_EXPRESS">American Express</option>
                     <option value="DINERS">Diners</option>
                     <option value="FLASH">Flash</option>
+                    <option value="ELO">Elo</option>
                 </select>
+
+
+                @if(form.controls.bandeira.hasError('required') && form.controls.bandeira.touched) {
+                <span class="form-hint form-hint-error">
+                    A Bandeira do cartão é obrigatória.
+                </span>
+                }
+
+                @if(form.controls.bandeira.hasError('apiError') && form.controls.bandeira.touched) {
+                <span class="form-hint form-hint-error">
+                    {{ form.get('bandeira')?.errors?.['apiError']}}
+                </span>
+                }
             </div>
 
             <div class="form-actions">
