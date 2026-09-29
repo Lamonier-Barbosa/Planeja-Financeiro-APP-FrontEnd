@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CartaoService } from '../cartao-service';
 import { DadosCartaoForm, DetalhesCartao } from '../dados-cartao';
+import { ValidationErrorResponse } from '../../common/validation/validation-error-model';
+import { CommonModule } from '@angular/common';
 
 interface CadastroCartaoForm {
   nome: FormControl<string>;
@@ -11,7 +13,7 @@ interface CadastroCartaoForm {
 
 @Component({
   selector: 'app-cadastro-cartao',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './cadastro-cartao.html',
   styleUrl: './cadastro-cartao.scss',
 })
@@ -27,8 +29,20 @@ export class CadastroCartao implements OnInit {
     });
   }
 
+  isFormInvalid(): boolean {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return true;
+    }
+    return false;
+  }
+
   handleSubmit() {
-    console.log(this.form.value);
+    if (this.isFormInvalid()) {
+      return;
+    }
+
+
     const dadosCartao = this.form.value as DadosCartaoForm;
     this.service
       .criar(dadosCartao)
@@ -36,7 +50,25 @@ export class CadastroCartao implements OnInit {
         next: (response: DetalhesCartao) => {
           console.log('resposta do servidor: ', response);
         },
-        error: (error) => console.log('ocorreu um erro: ', error)
+        error: (error) => this.onApiError(error)
       });
+  }
+
+  private aplicarErrosValidacao(error: ValidationErrorResponse) {
+    error.camposInvalidos.forEach(campoInvalido => {
+      const control = this.form.get(campoInvalido.campo);
+      if (control) {
+        control.setErrors({ apiError: campoInvalido.erro });
+        control.markAsTouched();
+      }
+    })
+  }
+
+  private onApiError(response: any): void {
+    if (response.status === 422) {
+      this.aplicarErrosValidacao(response.error);
+      return;
+    }
+
   }
 }
